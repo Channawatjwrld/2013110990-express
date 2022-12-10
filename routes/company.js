@@ -1,9 +1,9 @@
 var express = require('express');
-const { company } = require('../controllers/userController');
 var router = express.Router();
+const companyController = require('../controllers/companyController')
 
 
-router.get('/', company);
+router.get('/', companyController.index);
 
 
 

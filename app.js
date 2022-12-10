@@ -2,6 +2,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const mongoose = require('mongoose');
+mongoose.connect('mongodb+srv://kengzero:256A9A9B@2013110990-channawat.nqlkntm.mongodb.net/restfulapi?retryWrites=true&w=majority',
+{useNewUrlParser: true, useUnifiedTopology: true})
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');

@@ -9,6 +9,7 @@ mongoose.connect('mongodb+srv://kengzero:256A9A9B@2013110990-channawat.nqlkntm.m
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var companyRouter = require('./routes/company');
+const staffRouter = require('./routes/staff')
 
 var app = express();
 
@@ -21,5 +22,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/company', companyRouter)
+app.use('/staff', staffRouter)
 
 module.exports = app;

@@ -87,7 +87,7 @@ exports.insert = async (req, res, next) => {
             salary: salary
         })
 
-        console.log(staff)
+        console.log
 
       res.status(200).json({
         message:'เพิ่มข้อมูลเรียบร้อยแล้ว'

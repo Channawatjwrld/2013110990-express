@@ -1,4 +1,5 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const { schema } = require('./staff');
 const Schema = mongoose.Schema
 
 
@@ -8,8 +9,13 @@ const menuSchema = new Schema({
     shop:{type:Schema.Types.ObjectId,ref:'Shop'}
 
 }, { 
+    toJSON: {virtuals:true},
     timestamps:true,
     collection: "menus" });
+
+    menuSchema.virtual('price_vat').get(function(){
+        return(this.price*0.07) + this.price
+    })
 
     const menu = mongoose.model("Menu",menuSchema)
 

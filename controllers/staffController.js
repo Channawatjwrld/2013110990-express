@@ -20,7 +20,7 @@ exports.index = async (req, res, next) => {
     const staffpWithPhotoDomain = staff.map((staff, index) => {
       return {
         name: staff.name,
-        photo: config.DOMAIN + staff.photo
+        photo: config.DOMAIN + '/images/' + staff.photo
       };
     });
   

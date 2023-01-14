@@ -1,11 +1,12 @@
 var express = require('express');
-const { index, bio } = require('../controllers/userController');
+const userController = require('../controllers/userController');
 var router = express.Router();
 
 
 /* GET users listing. */
-router.get('/', index);
-router.get('/bio', bio);
+router.get('/', userController.index);
+router.get('/bio', userController.bio);
+router.post('/',userController.register)
 
 
 module.exports = router;

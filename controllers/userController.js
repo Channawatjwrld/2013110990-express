@@ -47,15 +47,27 @@ exports.company =(req, res, next) =>{
 }
 
 exports.register = async(req,res,next) =>{
-    const {name, email, password} = req.body
-    let user = new User()
-    user.name = name
-    user.email = email
-    user.password = await user.encryptPassword(password)
-
-    await user.save()
-
-    res.status(200).json({
-        message:"Hello Register"
-    })
+    try{
+        const {name, email, password} = req.body
+        let user = new User()
+        user.name = name
+        user.email = email
+        user.password = await user.encryptPassword(password)
+        const existEmail = await User.findOne({email:email})
+    
+        if(existEmail){
+            const error = new Error("Email นี้มีผู้ใช้งานแล้ว")
+            error.statusCode = 400
+            throw error;
+        }
+        await user.save()
+    
+        res.status(200).json({
+            message:"Hello Register"
+        })
+    }
+    catch(error){
+        next(error)
+    }
 }
+

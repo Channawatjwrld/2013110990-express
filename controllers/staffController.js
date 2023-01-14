@@ -37,18 +37,16 @@ exports.show = async (req, res, next) => {
     })
 
     if(!staff){
-        throw new Error('Error 404: Not Found')
+      const error = new Error("ไม่พบ staff")
+      error.statusCode = 400
+      throw error;
     } else {
         res.status(200).json({
             data: staff
           })
     }
     }catch (error) {
-        res.status(400).json({
-            error: {
-                message: 'Error 404: Not Found :' + error.message
-            }
-          })
+        next(error)
     }
 };
 
@@ -59,7 +57,9 @@ exports.destroy = async (req, res, next) => {
         _id : id
     })
     if(staff.deletedCount === 0){
-        throw new Error('ไม่สามารถลบข้อมูลได้ / ไม่พบข้อมูลผู้ใช้งาน')
+      const error = new Error("ไม่สามารถลบข้อมูลได้ / ไม่พบข้อมูลผู้ใช้งาน")
+            error.statusCode = 400
+            throw error;
     }else{
         res.status(200).json({
             message:'ลบข้อมูลเรียบร้อย'
@@ -67,11 +67,7 @@ exports.destroy = async (req, res, next) => {
     }
 
     }catch (Error) {
-        res.status(400).json({
-            error: {
-                message: 'Error :' + Error.message
-            }
-          })
+       next(error)
     }
 };
 
@@ -105,24 +101,20 @@ exports.insert = async (req, res, next) => {
             name: name,
             salary: salary
         }) */
-
         const staff = await Staff.updateOne({_id: id},{
-            name: name,
-            salary: salary
-        })
-
-        console.log
+          name : name,
+          salary : salary
+      })
+      console.log(staff);
 
       res.status(200).json({
         message:'เพิ่มข้อมูลเรียบร้อยแล้ว'
       });
 
     }catch (error){
-        res.status(400).json({
-            error: {
-                message: 'Error :' + Error.message
-            }
-          })
+       error = new Error('No staff Found')
+       error.statusCode = 400
+       next(error)
     }
   };
 

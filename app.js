@@ -14,6 +14,7 @@ var companyRouter = require('./routes/company');
 const staffRouter = require('./routes/staff')
 const shopRouter = require('./routes/shop');
 
+const errorHandle = require('./middleware/errorHandle')
 
 var app = express();
 
@@ -25,10 +26,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/user', userRouter);
+
+app.use('/', indexRouter)
+app.use('/user', userRouter)
 app.use('/company', companyRouter)
 app.use('/staff', staffRouter)
 app.use('/shop', shopRouter)
 
+
+app.use(errorHandle)
 module.exports = app;
+
+

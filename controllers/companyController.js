@@ -28,7 +28,9 @@ exports.show = async (req, res, next) => {
       _id: id
     })
     if (!company) {
-      throw new Error('ไม่พบผู้ใช้งาน')
+      const error = new Error("ไม่พบข้อมูลบริษัท")
+          error.statusCode = 400
+          throw error
     } else {
       res.status(200).json({
         data: company
@@ -36,11 +38,7 @@ exports.show = async (req, res, next) => {
     }
 
   } catch (error) {
-    res.status(400).json({
-      error: {
-        message: 'เกิดข้อผิดพลาด : ' + error.message
-      }
-    })
+    next(error)
   }
 };
 
@@ -54,18 +52,16 @@ exports.destroy = async (req, res, next) => {
     })
 
     if (company.deletedCount === 0) {
-      throw new Error('ไม่สามารถลบข้อมูลได้ / ไม่พบบริษัท')
+      const error = new Error("ไม่สามารถลบข้อมูลได้ / ไม่พบบริษัท")
+        error.statusCode = 400
+        throw error;
     } else {
       res.status(200).json({
         message: 'ลบข้อมูลเรียบร้อย',
       })
     }
   } catch (error) {
-    res.status(400).json({
-      error: {
-        message: 'Error : ' + error.message
-      }
-    })
+    next(error)
   }
 };
 
@@ -85,10 +81,8 @@ exports.update = async (req, res, next) => {
       message: "เพิ่มข้อมูลเรียบร้อย",
     });
   } catch (error) {
-    res.status(400).json({
-      error: {
-        message: "เกิดข้อผิดพลาด" + error.message,
-      },
-    });
+    error = new Error('เกิดข้อผิดพลาด')
+       error.statusCode = 400
+       next(error)
   }
 };

@@ -4,6 +4,8 @@ module.exports = (err,req,res,next) => {
 
     res.status(statusCode).json({
         status_code:statusCode,
-        message:err.message})
+        message:err.message,
+        validation: err.validation
+    })
 
 }

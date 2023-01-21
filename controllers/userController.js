@@ -1,4 +1,5 @@
 const User = require("../models/user")
+const {validationResult} = require('express-validator')
 exports.index = (req, res, next) => {
     //res.send('Hello World');
     res.status(200).json({
@@ -49,6 +50,14 @@ exports.company =(req, res, next) =>{
 exports.register = async(req,res,next) =>{
     try{
         const {name, email, password} = req.body
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const error = new Error("Invalid Email")
+            error.statusCode = 422;
+            error.validation = errors.array()
+            throw error;
+        }
         let user = new User()
         user.name = name
         user.email = email

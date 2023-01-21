@@ -4,6 +4,7 @@ const uuidv4 = require('uuid');
 const { promisify } = require('util')
 const writeFileAsync = promisify(fs.writeFile)
 const config = require("../config/index")
+const {validationResult} = require('express-validator')
 
 const Staff = require('../models/staff')
 /*exports.index = async (req, res, next) => {
@@ -72,19 +73,31 @@ exports.destroy = async (req, res, next) => {
 };
 
 exports.insert = async (req, res, next) => {
+    try {
+    const { name, salary, photo } = req.body;
 
-    const{ name,salary,photo } = req.body
-    
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error("Invalid data");
+      error.statusCode = 422;
+      error.validation = errors.array();
+      throw error;
+    }
+
     let staff = new Staff({
-        name: name,
-        salary: salary,
-        photo: await saveImageToDisk(photo)
-    })
-    await staff.save()
-      res.status(200).json({
-        message:'เพิ่มข้อมูลเรียบร้อยแล้ว'
-      });
-  };
+      name: name,
+      salary: salary,
+      photo: photo && (await saveImageToDisk(photo)),
+    });
+    await staff.save();
+
+    res.status(200).json({
+      message: "Insert data Success",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
   exports.update = async (req, res, next) => {
 

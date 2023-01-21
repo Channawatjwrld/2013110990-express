@@ -1,5 +1,8 @@
 const User = require("../models/user")
 const {validationResult} = require('express-validator')
+const jwt = require('jsonwebtoken')
+const config = require("../config/index")
+
 exports.index = (req, res, next) => {
     //res.send('Hello World');
     res.status(200).json({
@@ -79,4 +82,47 @@ exports.register = async(req,res,next) =>{
         next(error)
     }
 }
+exports.login = async(req,res,next) =>{
+    try{
+        const {email, password} = req.body
+        
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const error = new Error("Invalid Data")
+            error.statusCode = 422;
+            error.validation = errors.array()
+            throw error;
+        }
+        const user = await User.findOne({email:email})
+    
+        if(!user){
+            const error = new Error("Cannot find user")
+            error.statusCode = 404
+            throw error;
+        }
 
+        const isValid = await user.checkPassword(password)
+
+        if(!isValid){
+            const error = new Error("Password Incorrect")
+            error.statusCode = 401
+            throw error;
+        }
+        //create token
+        const token = await jwt.sign({
+            id:user._id,role:user.role,
+        },config.PRIVATE_KEY
+        ,{expiresIn: "5 days"})
+
+        const expires_in = jwt.decode(token)
+
+        res.status(200).json({
+            access_token:token,
+            expires_in:expires_in.exp,
+            token_type:'Bearer'
+        })
+    }
+    catch(error){
+        next(error)
+    }
+}
